@@ -1,0 +1,22 @@
+FROM --platform=$BUILDPLATFORM linuxserver/transmission
+# dynamic config
+ARG             BUILD_DATE
+ARG             VCS_REF
+ARG             VERSION
+
+LABEL org.label-schema.build-date=$BUILD_DATE \
+    org.label-schema.name="transmission with media-normalizer" \
+    org.label-schema.description="" \
+    org.label-schema.url="" \
+    org.label-schema.vcs-ref=$VCS_REF \
+    org.label-schema.vcs-url="https://github.com/MrEhbr/media-normalizer" \
+    org.label-schema.vendor="Aleksei Burmistrov" \
+    org.label-schema.version=$VERSION \
+    org.label-schema.schema-version="1.0" \
+    org.label-schema.cmd="docker run -i -t --rm mrehbr/transmission" \
+    org.label-schema.help="docker exec -it $CONTAINER transmission --help"
+
+RUN apk add --no-cache mkvtoolnix
+
+COPY            media-normalizer /bin/
+COPY            scripts/ /usr/bin/

@@ -1,0 +1,109 @@
+before:
+  hooks:
+    - go mod download
+builds:
+  - goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    flags:
+      - "-a"
+    ldflags:
+      - '-extldflags "-static"'
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser
+    env:
+      - CGO_ENABLED=0
+    main: ./cmd/media-normalizer/main.go
+    binary: media-normalizer
+dockers:
+  - use: buildx
+    goos: linux
+    goarch: amd64
+    dockerfile: Dockerfile
+    image_templates:
+      - mrehbr/media-normalizer:latest-amd64
+      - mrehbr/media-normalizer:{{ .Tag }}-amd64
+      - mrehbr/media-normalizer:{{ .Version }}-amd64
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=VCS_REF={{.Commit}}"
+      - "--build-arg=BUILD_DATE={{.Date}}"
+      - "--build-arg=VERSION={{.Version}}"
+  - use: buildx
+    goos: linux
+    goarch: arm64
+    dockerfile: Dockerfile
+    image_templates:
+      - mrehbr/media-normalizer:latest-arm64
+      - mrehbr/media-normalizer:{{ .Tag }}-arm64
+      - mrehbr/media-normalizer:{{ .Version }}-arm64
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--build-arg=VCS_REF={{.Commit}}"
+      - "--build-arg=BUILD_DATE={{.Date}}"
+      - "--build-arg=VERSION={{.Version}}"
+  - use: buildx
+    goos: linux
+    goarch: amd64
+    dockerfile: Dockerfile_transmission
+    extra_files:
+      - scripts
+    image_templates:
+      - mrehbr/transmission:latest-amd64
+      - mrehbr/transmission:{{ .Tag }}-amd64
+      - mrehbr/transmission:{{ .Version }}-amd64
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=VCS_REF={{.Commit}}"
+      - "--build-arg=BUILD_DATE={{.Date}}"
+      - "--build-arg=VERSION={{.Version}}"
+  - use: buildx
+    goos: linux
+    goarch: arm64
+    dockerfile: Dockerfile_transmission
+    extra_files:
+      - scripts
+    image_templates:
+      - mrehbr/transmission:latest-arm64
+      - mrehbr/transmission:{{ .Tag }}-arm64
+      - mrehbr/transmission:{{ .Version }}-arm64
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--build-arg=VCS_REF={{.Commit}}"
+      - "--build-arg=BUILD_DATE={{.Date}}"
+      - "--build-arg=VERSION={{.Version}}"
+docker_manifests:
+  - name_template: mrehbr/transmission:{{ .Version }}
+    image_templates:
+      - mrehbr/transmission:{{ .Version }}-amd64
+      - mrehbr/transmission:{{ .Version }}-arm64
+  - name_template: mrehbr/transmission:latest
+    image_templates:
+      - mrehbr/transmission:latest-amd64
+      - mrehbr/transmission:latest-arm64
+  - name_template: mrehbr/media-normalizer:{{ .Version }}
+    image_templates:
+      - mrehbr/media-normalizer:{{ .Version }}-amd64
+      - mrehbr/media-normalizer:{{ .Version }}-arm64
+  - name_template: mrehbr/media-normalizer:latest
+    image_templates:
+      - mrehbr/media-normalizer:latest-amd64
+      - mrehbr/media-normalizer:latest-arm64
+source:
+  enabled: true
+archives:
+  - wrap_in_directory: true
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+checksum:
+  name_template: "checksums.txt"
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
