@@ -20,3 +20,6 @@ RUN apk add --no-cache mkvtoolnix
 
 COPY            media-normalizer /bin/
 COPY            scripts/ /usr/bin/
+
+EXPOSE 9091 51413/tcp 51413/udp
+VOLUME /config

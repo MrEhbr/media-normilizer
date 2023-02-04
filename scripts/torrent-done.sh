@@ -7,5 +7,5 @@ then
     dir=$TR_TORRENT_DIR/$TR_TORRENT_NAME
     target="."
 fi
-cd $dir
+cd "$dir"
 /bin/media-normalizer $target
