@@ -14,7 +14,7 @@ jobs:
         golang: [1.19.x]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v3.5.0
       - name: Unshallow
         run: git fetch --prune --unshallow
       - name: Run Semantic Release
