@@ -1,5 +1,5 @@
 # minimalist runtime
-FROM --platform=$BUILDPLATFORM alpine:3.17.1
+FROM --platform=$BUILDPLATFORM alpine:3.17.3
 # dynamic config
 ARG             BUILD_DATE
 ARG             VCS_REF
