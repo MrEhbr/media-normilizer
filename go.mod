@@ -6,7 +6,7 @@ require (
 	github.com/elboletaire/remuxing v0.0.2
 	github.com/jpillora/media-sort v0.0.0-20210610205241-0d13a8a0d341
 	github.com/jpillora/sizestr v1.0.0
-	github.com/urfave/cli/v2 v2.24.2
+	github.com/urfave/cli/v2 v2.25.2
 	mvdan.cc/gofumpt v0.4.0
 )
 
